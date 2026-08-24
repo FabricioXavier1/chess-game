@@ -32,3 +32,24 @@
 .tile img {
     width: 80px;
 }
+
+.tile-highlight {
+    position: relative;
+}
+
+.tile-highlight::after {
+    content: "";
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.25);
+}
+
+.tile-highlight .chess-piece {
+    box-shadow: inset 0 0 0 4px rgba(200, 50, 50, 0.55);
+    border-radius: 50%;
+}
+
+.tile-check {
+    box-shadow: inset 0 0 0 6px rgba(220, 20, 20, 0.75);
+}

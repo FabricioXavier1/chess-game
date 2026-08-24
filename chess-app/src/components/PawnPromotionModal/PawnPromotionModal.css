@@ -1,0 +1,38 @@
+.promotion-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: grid;
+  place-content: center;
+  z-index: 10;
+}
+
+.promotion-modal {
+  background-color: #202020;
+  border-radius: 8px;
+  padding: 24px;
+  text-align: center;
+  color: white;
+  font-family: sans-serif;
+}
+
+.promotion-options {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.promotion-option {
+  width: 70px;
+  height: 70px;
+  background-color: #ebecd0;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 55px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.promotion-option:hover {
+  background-color: #cfd1a3;
+}
