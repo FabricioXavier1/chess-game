@@ -11,6 +11,32 @@
     font-size: 20px;
 }
 
+#controls-bar {
+    display: flex;
+    gap: 8px;
+}
+
+#controls-bar button {
+    font-family: sans-serif;
+    font-size: 14px;
+    padding: 6px 14px;
+    border-radius: 4px;
+    border: none;
+    background-color: #779556;
+    color: white;
+    cursor: pointer;
+}
+
+#controls-bar button:hover:not(:disabled) {
+    background-color: #5f7a43;
+}
+
+#controls-bar button:disabled {
+    background-color: #444;
+    color: #888;
+    cursor: not-allowed;
+}
+
 #chessboard {
     display: grid;
     grid-template-columns: repeat(8, 100px);

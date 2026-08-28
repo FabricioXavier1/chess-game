@@ -12,6 +12,12 @@ interface PendingPromotion {
   destination: Position;
 }
 
+interface HistoryEntry {
+  pieces: Piece[];
+  currentTeam: TeamType;
+  inCheckTeam: TeamType | null;
+}
+
 function applyMove(piece: Piece, destination: Position, boardState: Piece[]): Piece[] {
   const isEnPassantCapture =
     piece.type === PieceType.PAWN &&
@@ -75,6 +81,7 @@ export default function Chessboard() {
   const [promotion, setPromotion] = useState<PendingPromotion | null>(null);
   const [gameOverMessage, setGameOverMessage] = useState<string | null>(null);
   const [inCheckTeam, setInCheckTeam] = useState<TeamType | null>(null);
+  const [history, setHistory] = useState<HistoryEntry[]>([]);
 
   function finishTurn(updatedPieces: Piece[]) {
     const nextTeam = currentTeam === TeamType.OUR ? TeamType.OPPONENT : TeamType.OUR;
@@ -136,6 +143,8 @@ export default function Chessboard() {
       const currentPiece = pieces.find((p) => samePosition(p, grabPosition));
 
       if (currentPiece && referee.isValidMove(currentPiece, { x, y }, pieces)) {
+        setHistory((h) => [...h, { pieces, currentTeam, inCheckTeam }]);
+
         const isPromotion = currentPiece.type === PieceType.PAWN && (y === 0 || y === 7);
         const updatedPieces = applyMove(currentPiece, { x, y }, pieces);
 
@@ -167,6 +176,28 @@ export default function Chessboard() {
     finishTurn(updatedPieces);
   }
 
+  function restartGame() {
+    setPieces(initialBoard);
+    setCurrentTeam(TeamType.OUR);
+    setPromotion(null);
+    setGameOverMessage(null);
+    setInCheckTeam(null);
+    setHistory([]);
+    setActivePiece(null);
+  }
+
+  function undoMove() {
+    if (history.length === 0) return;
+    const last = history[history.length - 1];
+    setPieces(last.pieces);
+    setCurrentTeam(last.currentTeam);
+    setInCheckTeam(last.inCheckTeam);
+    setGameOverMessage(null);
+    setPromotion(null);
+    setActivePiece(null);
+    setHistory((h) => h.slice(0, -1));
+  }
+
   const grabbedPiece = activePiece ? pieces.find((p) => samePosition(p, grabPosition)) : undefined;
   const legalMoves = grabbedPiece ? referee.getValidMoves(grabbedPiece, pieces) : [];
 
@@ -190,6 +221,12 @@ export default function Chessboard() {
   return (
     <div id="chessboard-wrapper">
       <div id="status-bar">{statusText}</div>
+      <div id="controls-bar">
+        <button onClick={undoMove} disabled={history.length === 0 || !!promotion}>
+          Desfazer
+        </button>
+        <button onClick={restartGame}>Reiniciar</button>
+      </div>
       {promotion && <PawnPromotionModal team={promotion.piece.team} onSelect={promotePawn} />}
       <div id="chessboard" ref={chessboardRef} onMouseDown={grabPiece} onMouseMove={movePiece} onMouseUp={dropPiece}>
         {board}
